@@ -159,8 +159,8 @@ public class TaskManager {
     public void deleteAllSubtasks() {
         subtasks.clear();
         for (Epic epic : epics.values()) {
-            updateEpicStatus(epic);
             epic.clearSubtasksId();
+            updateEpicStatus(epic);
         }
     }
 
