@@ -18,7 +18,7 @@ public interface TaskManager {
 
     boolean updateSubtask(Subtask subtask);
 
-    ArrayList<Subtask> getEpicSubtasks(Integer epicId);
+    List<Subtask> getEpicSubtasks(Integer epicId);
 
     Task deleteTaskById(Integer id);
 
@@ -32,11 +32,11 @@ public interface TaskManager {
 
     Subtask getSubtaskById(Integer id);
 
-    ArrayList<Task> getAllTasks();
+    List<Task> getAllTasks();
 
-    ArrayList<Epic> getAllEpics();
+    List<Epic> getAllEpics();
 
-    ArrayList<Subtask> getAllSubtasks();
+    List<Subtask> getAllSubtasks();
 
     void deleteAllTasks();
 

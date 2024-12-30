@@ -5,17 +5,17 @@ import tasks.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final HashMap<Integer, Task> tasks = new HashMap<>();
-    private final HashMap<Integer, Epic> epics = new HashMap<>();
-    private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
+    private final Map<Integer, Task> tasks = new HashMap<>();
+    private final Map<Integer, Epic> epics = new HashMap<>();
+    private final Map<Integer, Subtask> subtasks = new HashMap<>();
     private int counter = 0;
     private HistoryManager historyManager;
 
-
-    public InMemoryTaskManager(HistoryManager historyManager) {
-        this.historyManager = historyManager;
+    public InMemoryTaskManager() {
+        this.historyManager = Managers.getDefaultHistory();
     }
 
     @Override
