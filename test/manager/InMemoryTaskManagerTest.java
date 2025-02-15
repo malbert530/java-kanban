@@ -187,6 +187,7 @@ class InMemoryTaskManagerTest {
         assertTrue(manager.getAllEpics().contains(epic1));
         assertTrue(manager.getAllEpics().contains(epic2));
 
+
         manager.deleteAllEpics();
 
         assertTrue(manager.getAllEpics().isEmpty());
@@ -222,19 +223,15 @@ class InMemoryTaskManagerTest {
 
         manager.getEpicById(epic.getId());          //1
         manager.getSubtaskById(subtask1.getId());   //2
-        manager.getSubtaskById(subtask2.getId());   //3   1
-        manager.getSubtaskById(subtask1.getId());   //4   2
-        manager.getSubtaskById(subtask2.getId());   //5   3
-        manager.getEpicById(epic.getId());          //6   4
-        manager.getEpicById(epic.getId());          //7   5
-        manager.getSubtaskById(subtask1.getId());   //8   6
-        manager.getSubtaskById(subtask2.getId());   //9   7
-        manager.getSubtaskById(subtask1.getId());   //10  8
-        manager.getSubtaskById(subtask1.getId());   //11  9
-        manager.getEpicById(epic.getId());          //12  10
+        manager.getSubtaskById(subtask2.getId());   //3
+        manager.getSubtaskById(subtask1.getId());
+        manager.getSubtaskById(subtask1.getId());
+        manager.getEpicById(epic.getId());
 
+
+        System.out.println(manager.getHistory());
+        assertEquals(manager.getHistory().get(2).getId(), epic.getId());
         assertEquals(manager.getHistory().get(0).getId(), subtask2.getId());
-        assertEquals(manager.getHistory().get(9).getId(), epic.getId());
     }
 
     @Test
@@ -255,6 +252,24 @@ class InMemoryTaskManagerTest {
         subtask2.setStatus(Status.IN_PROGRESS);
         manager.updateSubtask(subtask2);
 
-        assertEquals(manager.getHistory().get(2).getStatus(), Status.NEW);
+        assertEquals(Status.NEW, manager.getHistory().get(2).getStatus());
+    }
+
+    @Test
+    void checkHistoryAfterDeleteEpic() {
+        Epic epic = new Epic("Эпик 1", "Описание эпика 1");
+        manager.createEpic(epic);
+        Subtask subtask1 = new Subtask("Подзадача 1", "Описание подзадачи 1", Status.NEW, epic.getId());
+        Subtask subtask2 = new Subtask("Подзадача 2", "Описание подзадачи 2", Status.NEW, epic.getId());
+        manager.createSubtask(subtask1);
+        manager.createSubtask(subtask2);
+
+        manager.getEpicById(epic.getId());
+        manager.getSubtaskById(subtask1.getId());
+        manager.getSubtaskById(subtask2.getId());
+        System.out.println(manager.getHistory());
+        manager.deleteAllEpics();
+        System.out.println(manager.getHistory());
+        assertTrue(manager.getHistory().isEmpty());
     }
 }
