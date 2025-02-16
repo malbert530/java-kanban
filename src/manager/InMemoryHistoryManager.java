@@ -12,16 +12,18 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-        if (history.isEmpty()) {
-            linkFirst(task);
-        } else if (history.containsKey(task.getId()) && size == 1) {
-            removeNode(history.get(task.getId()));
-            linkFirst(task);
-        } else if (history.containsKey(task.getId())) {
-            removeNode(history.get(task.getId()));
-            linkLast(task);
-        } else {
-            linkLast(task);
+        if (task != null) {
+            if (history.isEmpty()) {
+                linkFirst(task);
+            } else if (history.containsKey(task.getId()) && size == 1) {
+                removeNode(history.get(task.getId()));
+                linkFirst(task);
+            } else if (history.containsKey(task.getId())) {
+                removeNode(history.get(task.getId()));
+                linkLast(task);
+            } else {
+                linkLast(task);
+            }
         }
     }
 
@@ -50,27 +52,21 @@ public class InMemoryHistoryManager implements HistoryManager {
             Node newHead = node.next;
             head = newHead;
             newHead.previous = null;
-            history.remove(node.task.getId());
-            size--;
         } else if (node != head && node == tail) {
             Node newTail = node.previous;
             tail = newTail;
             newTail.next = null;
-            history.remove(node.task.getId());
-            size--;
         } else if (node == head) {
             head = null;
             tail = null;
-            history.remove(node.task.getId());
-            size--;
         } else {
             Node prev = node.previous;
             Node next = node.next;
             prev.next = next;
             next.previous = prev;
-            history.remove(node.task.getId());
-            size--;
         }
+        history.remove(node.task.getId());
+        size--;
     }
 
     private void linkLast(Task task) {
