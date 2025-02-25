@@ -1,0 +1,7 @@
+0,TASK,Task0,NEW,Description0,
+1,TASK,Task1,NEW,Description1,
+2,EPIC,Epic2,NEW,Description2,
+3,EPIC,Epic3,NEW,Description3,
+4,SUBTASK,Subtask4,NEW,Description4,2
+5,SUBTASK,Subtask5,NEW,Description5,2
+6,SUBTASK,Subtask6,NEW,Description6,3
