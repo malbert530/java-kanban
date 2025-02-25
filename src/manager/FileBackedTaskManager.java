@@ -11,7 +11,7 @@ import java.nio.file.Files;
 import java.util.*;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
-    private File data;
+    private final File data;
 
     public FileBackedTaskManager(File data) {
         super();
@@ -24,7 +24,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             List<String> allLines = Files.readAllLines(file.toPath());
             for (String line : allLines) {
                 String[] note = line.split(",");
-                if (TaskTypes.valueOf(note[1]).equals(TaskTypes.TASK)) {
+                if (note[1].equals("type")) {
+                } else if (TaskTypes.valueOf(note[1]).equals(TaskTypes.TASK)) {
                     Task task = createTaskFromString(note);
                     manager.tasks.put(task.getId(), task);
                 } else if (TaskTypes.valueOf(note[1]).equals(TaskTypes.EPIC)) {
@@ -178,6 +179,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private void writeStringInFile(List<String> allLines) {
         try (FileWriter fw = new FileWriter(data)) {
+            fw.write("id,type,name,status,description,epic\n");
             for (String line : allLines) {
                 fw.write(line + "\n");
             }

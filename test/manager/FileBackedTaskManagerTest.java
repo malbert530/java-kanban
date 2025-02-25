@@ -50,13 +50,11 @@ public class FileBackedTaskManagerTest {
         Epic epic2 = new Epic("Epic2", "Description2");
         manager.createEpic(epic1);
         manager.createEpic(epic2);
+        manager.deleteAllEpics();
         try {
             List<String> allLines = Files.readAllLines(file.toPath());
-            assertFalse(allLines.isEmpty());
-
-            manager.deleteAllEpics();
-            allLines = Files.readAllLines(file.toPath());
-            assertTrue(allLines.isEmpty());
+            String header = "id,type,name,status,description,epic";
+            assertEquals(header, allLines.getLast());
         } catch (IOException e) {
             System.out.println("Ошибка при чтении файла " + e.getMessage());
             throw new RuntimeException(e);
@@ -88,13 +86,11 @@ public class FileBackedTaskManagerTest {
 
         manager.createTask(task1);
         manager.createTask(task2);
+        manager.deleteAllTasks();
         try {
             List<String> allLines = Files.readAllLines(file.toPath());
-            assertFalse(allLines.isEmpty());
-
-            manager.deleteAllTasks();
-            allLines = Files.readAllLines(file.toPath());
-            assertTrue(allLines.isEmpty());
+            String header = "id,type,name,status,description,epic";
+            assertEquals(header, allLines.getLast());
         } catch (IOException e) {
             System.out.println("Ошибка при чтении файла " + e.getMessage());
             throw new RuntimeException(e);
@@ -123,11 +119,12 @@ public class FileBackedTaskManagerTest {
         manager.createEpic(epic1);
         try {
             List<String> allLines = Files.readAllLines(file.toPath());
-            assertFalse(allLines.isEmpty());
+            assertEquals(allLines.getLast(), epic1.toString());
 
             manager.deleteEpicById(epic1.getId());
             allLines = Files.readAllLines(file.toPath());
-            assertTrue(allLines.isEmpty());
+            String header = "id,type,name,status,description,epic";
+            assertEquals(header, allLines.getLast());
         } catch (IOException e) {
             System.out.println("Ошибка при чтении файла " + e.getMessage());
             throw new RuntimeException(e);
@@ -140,11 +137,12 @@ public class FileBackedTaskManagerTest {
         manager.createTask(task);
         try {
             List<String> allLines = Files.readAllLines(file.toPath());
-            assertFalse(allLines.isEmpty());
+            assertEquals(allLines.getLast(), task.toString());
 
             manager.deleteTaskById(task.getId());
             allLines = Files.readAllLines(file.toPath());
-            assertTrue(allLines.isEmpty());
+            String header = "id,type,name,status,description,epic";
+            assertEquals(header, allLines.getLast());
         } catch (IOException e) {
             System.out.println("Ошибка при чтении файла " + e.getMessage());
             throw new RuntimeException(e);
@@ -176,7 +174,7 @@ public class FileBackedTaskManagerTest {
         manager.updateEpic(epic);
         try {
             List<String> allLines = Files.readAllLines(file.toPath());
-            assertEquals(allLines.getFirst(), epic.toString());
+            assertEquals(allLines.get(1), epic.toString());
         } catch (IOException e) {
             System.out.println("Ошибка при чтении файла " + e.getMessage());
             throw new RuntimeException(e);
@@ -191,7 +189,7 @@ public class FileBackedTaskManagerTest {
         manager.updateTask(task);
         try {
             List<String> allLines = Files.readAllLines(file.toPath());
-            assertEquals(allLines.getFirst(), task.toString());
+            assertEquals(allLines.get(1), task.toString());
         } catch (IOException e) {
             System.out.println("Ошибка при чтении файла " + e.getMessage());
             throw new RuntimeException(e);
@@ -204,7 +202,7 @@ public class FileBackedTaskManagerTest {
         manager.createTask(task);
         try {
             List<String> allLines = Files.readAllLines(file.toPath());
-            assertEquals(allLines.getFirst(), task.toString());
+            assertEquals(allLines.get(1), task.toString());
         } catch (IOException e) {
             System.out.println("Ошибка при чтении файла " + e.getMessage());
             throw new RuntimeException(e);
@@ -217,7 +215,7 @@ public class FileBackedTaskManagerTest {
         manager.createEpic(epic);
         try {
             List<String> allLines = Files.readAllLines(file.toPath());
-            assertEquals(allLines.getFirst(), epic.toString());
+            assertEquals(allLines.get(1), epic.toString());
         } catch (IOException e) {
             System.out.println("Ошибка при чтении файла " + e.getMessage());
             throw new RuntimeException(e);
@@ -232,7 +230,7 @@ public class FileBackedTaskManagerTest {
         manager.createSubtask(subtask);
         try {
             List<String> allLines = Files.readAllLines(file.toPath());
-            assertEquals(allLines.getFirst(), epic.toString());
+            assertEquals(allLines.get(1), epic.toString());
             assertEquals(allLines.getLast(), subtask.toString());
         } catch (IOException e) {
             System.out.println("Ошибка при чтении файла " + e.getMessage());

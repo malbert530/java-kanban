@@ -219,7 +219,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private int nextId() {
-        return counter++;
+        return ++counter;
     }
 
     @Override
