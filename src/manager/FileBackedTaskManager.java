@@ -25,6 +25,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             for (String line : allLines) {
                 String[] note = line.split(",");
                 if (note[1].equals("type")) {
+                    continue;
                 } else if (TaskTypes.valueOf(note[1]).equals(TaskTypes.TASK)) {
                     Task task = createTaskFromString(note);
                     manager.tasks.put(task.getId(), task);
