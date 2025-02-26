@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final Map<Integer, Task> tasks = new HashMap<>();
-    private final Map<Integer, Epic> epics = new HashMap<>();
-    private final Map<Integer, Subtask> subtasks = new HashMap<>();
-    private int counter = 0;
+    protected final Map<Integer, Task> tasks = new HashMap<>();
+    protected final Map<Integer, Epic> epics = new HashMap<>();
+    protected final Map<Integer, Subtask> subtasks = new HashMap<>();
+    protected int counter = 0;
     private HistoryManager historyManager;
 
     public InMemoryTaskManager() {
@@ -219,7 +219,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private int nextId() {
-        return counter++;
+        return ++counter;
     }
 
     @Override

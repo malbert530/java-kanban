@@ -228,8 +228,6 @@ class InMemoryTaskManagerTest {
         manager.getSubtaskById(subtask1.getId());
         manager.getEpicById(epic.getId());
 
-
-        System.out.println(manager.getHistory());
         assertEquals(manager.getHistory().get(2).getId(), epic.getId());
         assertEquals(manager.getHistory().get(0).getId(), subtask2.getId());
     }
@@ -267,9 +265,9 @@ class InMemoryTaskManagerTest {
         manager.getEpicById(epic.getId());
         manager.getSubtaskById(subtask1.getId());
         manager.getSubtaskById(subtask2.getId());
-        System.out.println(manager.getHistory());
+
         manager.deleteAllEpics();
-        System.out.println(manager.getHistory());
+
         assertTrue(manager.getHistory().isEmpty());
     }
 }
