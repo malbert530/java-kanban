@@ -8,6 +8,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -29,12 +32,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 } else if (TaskTypes.valueOf(note[1]).equals(TaskTypes.TASK)) {
                     Task task = createTaskFromString(note);
                     manager.tasks.put(task.getId(), task);
+                    manager.addToPrioritizedList(task);
                 } else if (TaskTypes.valueOf(note[1]).equals(TaskTypes.EPIC)) {
                     Epic epic = createEpicFromString(note);
                     manager.epics.put(epic.getId(), epic);
                 } else if (TaskTypes.valueOf(note[1]).equals(TaskTypes.SUBTASK)) {
                     Subtask subtask = createSubtaskFromString(note);
                     manager.subtasks.put(subtask.getId(), subtask);
+                    manager.addToPrioritizedList(subtask);
                     manager.epics.get(subtask.getEpicId()).updateSubtasksId(subtask.getId());
                 }
             }
@@ -57,7 +62,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private static Subtask createSubtaskFromString(String[] str) {
         int id = Integer.parseInt(str[0]);
-        int epicId = Integer.parseInt(str[5]);
+        int epicId = Integer.parseInt(str[7]);
         String name = str[2];
         String description = str[4];
         Status status = Status.valueOf(str[3]);
@@ -77,7 +82,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String name = str[2];
         String description = str[4];
         Status status = Status.valueOf(str[3]);
-        return new Task(id, name, description, status);
+        Instant startTime = str[5].equals("null") ? null : Instant.parse(str[5]);
+        Duration duration = str[6].equals("null") ? null : Duration.of(Integer.parseInt(str[6]), ChronoUnit.MINUTES);
+        return new Task(id, name, description, status, duration, startTime);
     }
 
     @Override
@@ -180,7 +187,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private void writeStringInFile(List<String> allLines) {
         try (FileWriter fw = new FileWriter(data)) {
-            fw.write("id,type,name,status,description,epic\n");
+            fw.write("id,type,name,status,description,start,duration,epic\n");
             for (String line : allLines) {
                 fw.write(line + "\n");
             }

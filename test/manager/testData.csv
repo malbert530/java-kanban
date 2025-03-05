@@ -1,8 +1,7 @@
-id,type,name,status,description,epic
-0,TASK,Task0,NEW,Description0,
-1,TASK,Task1,NEW,Description1,
-2,EPIC,Epic2,NEW,Description2,
-3,EPIC,Epic3,NEW,Description3,
-4,SUBTASK,Subtask4,NEW,Description4,2
-5,SUBTASK,Subtask5,NEW,Description5,2
-6,SUBTASK,Subtask6,NEW,Description6,3
+id,type,name,status,description,start,duration,epic
+2,TASK,Task2,NEW,Description,2025-03-03T12:15:00Z,15,
+3,TASK,Task3,NEW,Description,2025-03-03T12:30:00Z,15,
+4,TASK,Task4,NEW,Description,2025-03-03T13:00:00Z,15,
+5,EPIC,Epic5,NEW,Description,2025-03-03T14:00:00Z,30,
+6,SUBTASK,Subtask6,NEW,Description,2025-03-03T14:00:00Z,15,5
+7,SUBTASK,Subtask7,NEW,Description,2025-03-03T14:15:00Z,15,5
