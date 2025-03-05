@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 public class Epic extends Task {
     private final ArrayList<Integer> subtasksId = new ArrayList<>();
+    private Instant endTime;
 
     public Epic(String name, String description) {
         super(name, description, Status.NEW);
@@ -48,6 +49,10 @@ public class Epic extends Task {
 
     @Override
     public Instant getEndTime() {
-        return super.getEndTime();
+        return endTime;
+    }
+
+    public void setEndTime(Instant endTime) {
+        this.endTime = endTime;
     }
 }

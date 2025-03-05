@@ -14,18 +14,6 @@ public class Task {
     protected Duration duration;
     protected Instant startTime;
 
-    public Duration getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Duration duration) {
-        this.duration = duration;
-    }
-
-    public void setStartTime(Instant startTime) {
-        this.startTime = startTime;
-    }
-
     public Task(Integer id, String name, String description, Status status) {
         this(name, description, status);
         this.id = id;
@@ -49,6 +37,18 @@ public class Task {
         this.description = description;
         this.status = status;
         this.duration = duration;
+        this.startTime = startTime;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public void setStartTime(Instant startTime) {
         this.startTime = startTime;
     }
 
@@ -85,7 +85,7 @@ public class Task {
     }
 
     public Instant getEndTime() {
-        return startTime.plus(duration.toMinutes(), ChronoUnit.MINUTES);
+        return startTime == null ? null : startTime.plus(duration.toMinutes(), ChronoUnit.MINUTES);
     }
 
     public Instant getStartTime() {
