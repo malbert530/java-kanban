@@ -52,6 +52,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
+    private void addToPrioritizedList(Task task) {
+        if (task.getStartTime() != null) {
+            if (prioritizedTasks.isEmpty() || isNotCross(task)) {
+                prioritizedTasks.add(task);
+            }
+        }
+    }
+
     private static int findLastId(FileBackedTaskManager mn) {
         Set<Integer> list = new HashSet<>();
         list.addAll(mn.tasks.keySet());
