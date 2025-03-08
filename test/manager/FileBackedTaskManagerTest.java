@@ -2,6 +2,8 @@ package manager;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import exception.ManagerLoadFileException;
+import exception.ManagerSaveException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,17 +14,24 @@ import tasks.Task;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-public class FileBackedTaskManagerTest {
-    private TaskManager manager;
+public class FileBackedTaskManagerTest extends TaskManagerTest {
     private File file;
 
     @BeforeEach
     public void initManager() {
+        manager = getTaskManager();
+    }
+
+    @Override
+    TaskManager getTaskManager() {
         try {
             file = File.createTempFile("dataTemp", ".csv");
-            manager = new FileBackedTaskManager(file);
+            return new FileBackedTaskManager(file);
         } catch (IOException e) {
             System.out.println("Ошибка при инициализации менеджера " + e.getMessage());
             throw new RuntimeException(e);
@@ -32,8 +41,11 @@ public class FileBackedTaskManagerTest {
     @Test
     void loadFromFile() {
         manager = FileBackedTaskManager.loadFromFile(new File("test/manager/testData.csv"));
-        assertEquals(new Task(0, "Task0", "Description0", Status.NEW), manager.getTaskById(0));
-        assertEquals(new Subtask(6, "Subtask6", "Description6", Status.NEW, 3), manager.getSubtaskById(6));
+        Duration duration1 = Duration.of(15, ChronoUnit.MINUTES);
+        Instant startTime1 = Instant.parse("2025-03-03T12:15:00Z");
+        Instant startTime2 = Instant.parse("2025-03-03T12:15:00Z");
+        assertEquals(new Task(2, "Task2", "Description", Status.NEW, duration1, startTime1), manager.getTaskById(2));
+        assertEquals(new Subtask(6, "Subtask6", "Description6", Status.NEW, duration1, startTime2, 5), manager.getSubtaskById(6));
     }
 
     @Test
@@ -53,7 +65,7 @@ public class FileBackedTaskManagerTest {
         manager.deleteAllEpics();
         try {
             List<String> allLines = Files.readAllLines(file.toPath());
-            String header = "id,type,name,status,description,epic";
+            String header = "id,type,name,status,description,start,duration,epic";
             assertEquals(header, allLines.getLast());
         } catch (IOException e) {
             System.out.println("Ошибка при чтении файла " + e.getMessage());
@@ -89,7 +101,7 @@ public class FileBackedTaskManagerTest {
         manager.deleteAllTasks();
         try {
             List<String> allLines = Files.readAllLines(file.toPath());
-            String header = "id,type,name,status,description,epic";
+            String header = "id,type,name,status,description,start,duration,epic";
             assertEquals(header, allLines.getLast());
         } catch (IOException e) {
             System.out.println("Ошибка при чтении файла " + e.getMessage());
@@ -123,7 +135,7 @@ public class FileBackedTaskManagerTest {
 
             manager.deleteEpicById(epic1.getId());
             allLines = Files.readAllLines(file.toPath());
-            String header = "id,type,name,status,description,epic";
+            String header = "id,type,name,status,description,start,duration,epic";
             assertEquals(header, allLines.getLast());
         } catch (IOException e) {
             System.out.println("Ошибка при чтении файла " + e.getMessage());
@@ -141,7 +153,7 @@ public class FileBackedTaskManagerTest {
 
             manager.deleteTaskById(task.getId());
             allLines = Files.readAllLines(file.toPath());
-            String header = "id,type,name,status,description,epic";
+            String header = "id,type,name,status,description,start,duration,epic";
             assertEquals(header, allLines.getLast());
         } catch (IOException e) {
             System.out.println("Ошибка при чтении файла " + e.getMessage());
@@ -236,6 +248,23 @@ public class FileBackedTaskManagerTest {
             System.out.println("Ошибка при чтении файла " + e.getMessage());
             throw new RuntimeException(e);
         }
+    }
+
+    @Test
+    public void testLoadFromFileException() {
+        assertThrows(ManagerLoadFileException.class, () -> {
+            manager = FileBackedTaskManager.loadFromFile(new File("test/manager/test.csv"));
+        }, "Ожидается сообщение об ошибке чтения файла");
+    }
+
+    @Test
+    public void testSaveInFileException() {
+
+        assertThrows(ManagerSaveException.class, () -> {
+            manager = new FileBackedTaskManager(new File("\0"));
+            Task task = new Task("Задача 1", "Описание задачи 1", Status.NEW);
+            manager.createTask(task);
+        }, "Ожидается сообщение об ошибке записи в файл");
     }
 
     @AfterEach

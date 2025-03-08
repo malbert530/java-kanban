@@ -1,5 +1,8 @@
 package tasks;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 
@@ -8,18 +11,45 @@ public class Task {
     protected String name;
     protected String description;
     protected Status status;
+    protected Duration duration;
+    protected Instant startTime;
 
     public Task(Integer id, String name, String description, Status status) {
+        this(name, description, status);
         this.id = id;
-        this.name = name;
-        this.description = description;
-        this.status = status;
     }
 
     public Task(String name, String description, Status status) {
         this.name = name;
         this.description = description;
         this.status = status;
+        this.duration = null;
+        this.startTime = null;
+    }
+
+    public Task(Integer id, String name, String description, Status status, Duration duration, Instant startTime) {
+        this(name, description, status, duration, startTime);
+        this.id = id;
+    }
+
+    public Task(String name, String description, Status status, Duration duration, Instant startTime) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.duration = duration;
+        this.startTime = startTime;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public void setStartTime(Instant startTime) {
+        this.startTime = startTime;
     }
 
     public Integer getId() {
@@ -54,6 +84,14 @@ public class Task {
         this.status = status;
     }
 
+    public Instant getEndTime() {
+        return startTime == null ? null : startTime.plus(duration.toMinutes(), ChronoUnit.MINUTES);
+    }
+
+    public Instant getStartTime() {
+        return startTime;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
@@ -70,6 +108,7 @@ public class Task {
     @Override
     public String toString() {
         return id + "," + TaskTypes.TASK + "," + name +
-                "," + status + "," + description + ",";
+                "," + status + "," + description + "," + startTime + ","
+                + (duration == null ? null : duration.toMinutes()) + ",";
     }
 }

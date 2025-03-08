@@ -1,9 +1,12 @@
 package tasks;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 
 public class Epic extends Task {
     private final ArrayList<Integer> subtasksId = new ArrayList<>();
+    private Instant endTime;
 
     public Epic(String name, String description) {
         super(name, description, Status.NEW);
@@ -13,10 +16,19 @@ public class Epic extends Task {
         super(id, name, description, status);
     }
 
+    public Epic(Integer id, String name, String description, Status status, Duration duration, Instant startTime) {
+        super(id, name, description, status, duration, startTime);
+    }
+
+    public Epic(String name, String description, Status status, Duration duration, Instant startTime) {
+        super(name, description, status, duration, startTime);
+    }
+
     @Override
     public String toString() {
         return id + "," + TaskTypes.EPIC + "," + name +
-                "," + status + "," + description + ",";
+                "," + status + "," + description + "," + startTime + ","
+                + (duration == null ? null : duration.toMinutes()) + ",";
     }
 
     public void updateSubtasksId(Integer id) {
@@ -33,5 +45,14 @@ public class Epic extends Task {
 
     public void clearSubtasksId() {
         subtasksId.clear();
+    }
+
+    @Override
+    public Instant getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Instant endTime) {
+        this.endTime = endTime;
     }
 }

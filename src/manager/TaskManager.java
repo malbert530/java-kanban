@@ -45,6 +45,8 @@ public interface TaskManager {
 
     List<Task> getHistory();
 
+    List<Task> getPrioritizedTasks();
+
     @Override
     String toString();
 }

@@ -25,6 +25,7 @@ hs_err_pid*
 # files
 data.csv
 .idea/vcs.xml
+/src/Main.java
 
 #folder
 /out
