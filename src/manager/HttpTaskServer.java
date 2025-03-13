@@ -27,10 +27,12 @@ public class HttpTaskServer {
         httpServer.createContext("/history", new HttpHistoryHandler(manager, jsonMapper));
         httpServer.createContext("/prioritized", new HttpPrioritizedHandler(manager, jsonMapper));
         httpServer.start();
+        System.out.printf("Сервер запущен на %d порту\n", PORT);
     }
 
     public void stop(int delay) {
         httpServer.stop(delay);
+        System.out.println("Сервер прекратил работу");
     }
 
     public static Gson getGson() {
