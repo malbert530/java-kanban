@@ -1,9 +1,7 @@
 package manager;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.sun.net.httpserver.HttpServer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
@@ -13,7 +11,6 @@ import tasks.Subtask;
 import tasks.Task;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -35,33 +32,24 @@ class EpicListTypeToken extends TypeToken<List<Epic>> {
 
 public class HttpTaskManagerTest {
     private static final int PORT = 8080;
-
-    HttpServer httpServer = HttpServer.create(new InetSocketAddress(PORT), 0);
-    Gson jsonMapper = new GsonBuilder()
-            .setPrettyPrinting()
-            .registerTypeAdapter(Instant.class, new InstantAdapter())
-            .registerTypeAdapter(Duration.class, new DurationAdapter())
-            .create();
     TaskManager manager = Managers.getDefault();
+    HttpTaskServer taskServer = new HttpTaskServer(manager);
+    Gson jsonMapper = HttpTaskServer.getGson();
+
 
     public HttpTaskManagerTest() throws IOException {
     }
 
     @BeforeEach
     public void setUp() throws IOException {
-        httpServer.createContext("/tasks", new HttpTaskHandler(manager, jsonMapper));
-        httpServer.createContext("/epics", new HttpEpicHandler(manager, jsonMapper));
-        httpServer.createContext("/subtasks", new HttpSubtaskHandler(manager, jsonMapper));
-        httpServer.createContext("/history", new HttpHistoryHandler(manager, jsonMapper));
-        httpServer.createContext("/prioritized", new HttpPrioritizedHandler(manager, jsonMapper));
         manager.deleteAllTasks();
         manager.deleteAllEpics();
-        httpServer.start();
+        taskServer.start();
     }
 
     @AfterEach
     public void shutDown() {
-        httpServer.stop(1);
+        taskServer.stop(1);
     }
 
     @Test
