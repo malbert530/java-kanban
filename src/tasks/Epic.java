@@ -20,10 +20,6 @@ public class Epic extends Task {
         super(id, name, description, status, duration, startTime);
     }
 
-    public Epic(String name, String description, Status status, Duration duration, Instant startTime) {
-        super(name, description, status, duration, startTime);
-    }
-
     @Override
     public String toString() {
         return id + "," + TaskTypes.EPIC + "," + name +

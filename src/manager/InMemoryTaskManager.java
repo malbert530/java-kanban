@@ -1,5 +1,6 @@
 package manager;
 
+import exception.TaskNotFoundException;
 import tasks.*;
 
 import java.time.Duration;
@@ -62,6 +63,9 @@ public class InMemoryTaskManager implements TaskManager {
                     setEpicTime(epics.get(subtask.getEpicId()));
                 }
             }
+        } else {
+            String errorMessage = String.format("Не существует эпика с id %d", subtask.getEpicId());
+            throw new TaskNotFoundException(errorMessage);
         }
         return subtask;
     }
@@ -110,6 +114,9 @@ public class InMemoryTaskManager implements TaskManager {
                     prioritizedTasks.add(task);
                 }
             }
+        } else {
+            String errorMessage = String.format("Задача с id %d не найдена", task.getId());
+            throw new TaskNotFoundException(errorMessage);
         }
         return updated;
     }
@@ -121,6 +128,9 @@ public class InMemoryTaskManager implements TaskManager {
             epics.get(epic.getId()).setName(epic.getName());
             epics.get(epic.getId()).setDescription(epic.getDescription());
             updated = true;
+        } else {
+            String errorMessage = String.format("Эпик с id %d не найден", epic.getId());
+            throw new TaskNotFoundException(errorMessage);
         }
         return updated;
     }
@@ -139,6 +149,9 @@ public class InMemoryTaskManager implements TaskManager {
                     setEpicTime(epics.get(subtask.getEpicId()));
                 }
             }
+        } else {
+            String errorMessage = String.format("Подзадача с id %d не найдена", subtask.getId());
+            throw new TaskNotFoundException(errorMessage);
         }
         return updated;
     }
@@ -176,16 +189,24 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Subtask> getEpicSubtasks(Integer epicId) {
-        List<Subtask> epicSubtasks = new ArrayList<>();
+        List<Subtask> epicSubtasks;
         if (epics.containsKey(epicId)) {
             epicSubtasks = epics.get(epicId).getSubtasksId().stream()
                     .map(subtasks::get).toList();
+        } else {
+            String errorMessage = String.format("Эпик с id %d не найден", epicId);
+            throw new TaskNotFoundException(errorMessage);
+
         }
         return epicSubtasks;
     }
 
     @Override
     public Task deleteTaskById(Integer id) {
+        if (Objects.isNull(tasks.get(id))) {
+            String errorMessage = String.format("Задача с id %d не найдена", id);
+            throw new TaskNotFoundException(errorMessage);
+        }
         prioritizedTasks.remove(tasks.get(id));
         historyManager.remove(id);
         return tasks.remove(id);
@@ -193,9 +214,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Epic deleteEpicById(Integer id) {
+        if (Objects.isNull(epics.get(id))) {
+            String errorMessage = String.format("Эпик с id %d не найден", id);
+            throw new TaskNotFoundException(errorMessage);
+        }
         if (epics.containsKey(id)) {
             for (Integer subtaskId : epics.get(id).getSubtasksId()) {
-                prioritizedTasks.remove(subtasks.get(id));
+                prioritizedTasks.remove(subtasks.get(subtaskId));
                 subtasks.remove(subtaskId);
                 historyManager.remove(subtaskId);
             }
@@ -206,6 +231,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Subtask deleteSubtaskById(Integer id) {
+        if (Objects.isNull(subtasks.get(id))) {
+            String errorMessage = String.format("Подзадача с id %d не найдена", id);
+            throw new TaskNotFoundException(errorMessage);
+        }
         if (subtasks.containsKey(id)) {
             int epicId = subtasks.get(id).getEpicId(); //вычисляем id эпика, куда входит подзадача
             epics.get(epicId).deleteSubtaskId(id); //удаляем id подзадачи из списка подзадач эпика
@@ -219,18 +248,30 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTaskById(Integer id) {
+        if (Objects.isNull(tasks.get(id))) {
+            String errorMessage = String.format("Задача с id %d не найдена", id);
+            throw new TaskNotFoundException(errorMessage);
+        }
         historyManager.add(tasks.get(id));
         return tasks.get(id);
     }
 
     @Override
     public Epic getEpicById(Integer id) {
+        if (Objects.isNull(epics.get(id))) {
+            String errorMessage = String.format("Эпик с id %d не найден", id);
+            throw new TaskNotFoundException(errorMessage);
+        }
         historyManager.add(epics.get(id));
         return epics.get(id);
     }
 
     @Override
     public Subtask getSubtaskById(Integer id) {
+        if (Objects.isNull(subtasks.get(id))) {
+            String errorMessage = String.format("Подзадача с id %d не найдена", id);
+            throw new TaskNotFoundException(errorMessage);
+        }
         historyManager.add(subtasks.get(id));
         return subtasks.get(id);
     }

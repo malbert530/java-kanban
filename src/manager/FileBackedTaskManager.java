@@ -74,7 +74,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String name = str[2];
         String description = str[4];
         Status status = Status.valueOf(str[3]);
-        return new Subtask(id, name, description, status, epicId);
+        Instant startTime = str[5].equals("null") ? null : Instant.parse(str[5]);
+        Duration duration = str[6].equals("null") ? null : Duration.of(Integer.parseInt(str[6]), ChronoUnit.MINUTES);
+        return new Subtask(id, name, description, status, duration, startTime, epicId);
     }
 
     private static Epic createEpicFromString(String[] str) {
@@ -82,7 +84,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String name = str[2];
         String description = str[4];
         Status status = Status.valueOf(str[3]);
-        return new Epic(id, name, description, status);
+        Instant startTime = str[5].equals("null") ? null : Instant.parse(str[5]);
+        Duration duration = str[6].equals("null") ? null : Duration.of(Integer.parseInt(str[6]), ChronoUnit.MINUTES);
+        return new Epic(id, name, description, status, duration, startTime);
     }
 
     private static Task createTaskFromString(String[] str) {
